@@ -1,42 +1,45 @@
 import React, { useState, useEffect } from "react";
 import Table from 'react-bootstrap/Table';
 import axios from 'axios';
+import moment from 'moment';
+import Topbar from "../Layout/Topbar";
+import { ToastContainer } from 'react-toastify';
+import { environment } from "../../environment/environment";
 
 const Home = () => {
 
     const [data, setData] = useState([]);
+
     useEffect(() => {
         // var stored = localStorage.getItem("students")
         // if (stored != null) {
         //     var newObject = JSON.parse(stored);
         //     setData(newObject);
         // }
-        axios.get("http://localhost:8000/").then(response =>{
-            const posts = response.data;
-           
-            setData(posts);
-            console.log("api hit",posts)
+        axios.get(environment.apiUrl +'getAlltransaction',
+            {headers: {
+                'content-type': 'text-json',
+                Authorization:`Bearer ${localStorage.getItem('token')}` 
+            }}
+            )
+            .then(response => {
+            // const gets = response.data;
+            setData(response.data);
+            // console.log("api hit", gets)
         })
     }, []);
+    const tableRows = data.map((value, key) => {
+        return (
 
-    const tableRows=data.map(item => {
-        console.log("nkcnckcnk",item)
-        return  <tr>
-        <td>{item.Description}</td>
-        <td>{item.Type}</td>
-        <td>{item.Amount}</td>
-    </tr>
-      })
-
-    // const tableRows = data.map((arison) => {
-    //     return (
-    //         <tr>
-    //             <td>{arison.description}</td>
-    //             <td>{arison.type}</td>
-    //             <td>{arison.amount}</td>
-    //         </tr>
-    //     )
-    // })
+            <tr key={key}>
+                <td>{moment(value.date).format("DD-MM-yyyy LT")}</td>
+                <td>{value.description}</td>
+                <td>{value.type}</td>
+                <td>{value.amount}</td>
+                <td>{value.runningBalance}</td>
+            </tr>
+        )
+    })
 
     // const addRows = (Data) => {
     //     // const totalEntry = data.length;
@@ -56,24 +59,28 @@ const Home = () => {
     //    }, []);
 
     return (
-        <div className="container">
-            <div className="w-100">
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            {/* <th>Date</th> */}
-                            <th>Description</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            {/* <th>RunningBalance</th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableRows}
-                    </tbody>
-                </Table>
+        <>
+            <div className="container">
+                <div className="w-100">
+                    <Topbar />
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>RunningBalance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tableRows}
+                        </tbody>
+                    </Table>
+                </div>
             </div>
-        </div>
+            <ToastContainer/>
+        </>
     )
 }
 

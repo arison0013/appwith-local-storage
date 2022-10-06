@@ -19,8 +19,8 @@ const Topbar = () => {
         <Nav className="me-auto">
           <Link className="nav-link" to="/home">Home</Link>
         </Nav>
-        <Nav className="me-auto">
-          <button onClick={logOut}>log Out</button>
+        <Nav className="btn btn-outline-light" onClick={logOut}>
+          log Out
         </Nav>
         <Link className="btn btn-outline-light" to="/AddTransaction" >Add Transaction</Link>
       </Container>
